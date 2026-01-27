@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ToolSendMessage")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+fee5fbf2724196d6a143120139519ee37a698fdc")]
 [assembly: System.Reflection.AssemblyProductAttribute("ToolSendMessage")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ToolSendMessage")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

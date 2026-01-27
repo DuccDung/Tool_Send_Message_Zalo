@@ -32,7 +32,7 @@
                 options.BinaryLocation = @"C:\Program Files\CocCoc\Browser\Application\browser.exe";
                 options.AddArgument("--start-maximized");
 
-                // ✅ Profile riêng cho Selenium (bạn login 1 lần)
+                //Profile riêng cho Selenium (bạn login 1 lần)
                 options.AddArgument(@"--user-data-dir=C:\ZaloCocCocProfile");
                 options.AddArgument("--profile-directory=Default"); // có thể bỏ nếu không cần
 

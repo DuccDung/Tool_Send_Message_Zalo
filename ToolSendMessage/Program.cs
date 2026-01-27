@@ -1,3 +1,5 @@
+using ToolSendMessage.view;
+
 namespace ToolSendMessage
 {
     internal static class Program
@@ -10,7 +12,7 @@ namespace ToolSendMessage
         {
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
-            Application.Run(new Form1());
+            Application.Run(new Dashboard());
         }
     }
 }

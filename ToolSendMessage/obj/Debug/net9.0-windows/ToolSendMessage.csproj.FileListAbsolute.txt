@@ -25,3 +25,5 @@ D:\laptrinhweb\code_outsrc\ToolSendMessagesZalo\ToolSendMessage\ToolSendMessage\
 D:\laptrinhweb\code_outsrc\ToolSendMessagesZalo\ToolSendMessage\ToolSendMessage\obj\Debug\net9.0-windows\ToolSendMessage.pdb
 D:\laptrinhweb\code_outsrc\ToolSendMessagesZalo\ToolSendMessage\ToolSendMessage\obj\Debug\net9.0-windows\ToolSendMessage.genruntimeconfig.cache
 D:\laptrinhweb\code_outsrc\ToolSendMessagesZalo\ToolSendMessage\ToolSendMessage\obj\Debug\net9.0-windows\ref\ToolSendMessage.dll
+D:\laptrinhweb\code_outsrc\ToolSendMessagesZalo\ToolSendMessage\ToolSendMessage\obj\Debug\net9.0-windows\ToolSendMessage.view.Dashboard.resources
+D:\laptrinhweb\code_outsrc\ToolSendMessagesZalo\ToolSendMessage\ToolSendMessage\obj\Debug\net9.0-windows\ToolSendMessage.sourcelink.json
