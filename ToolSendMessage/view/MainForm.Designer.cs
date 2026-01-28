@@ -23,9 +23,9 @@
 
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle6 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
             tlpRoot = new TableLayoutPanel();
             dgvPreview = new DataGridView();
             pnlRight = new Panel();
@@ -42,20 +42,20 @@
             // 
             // tlpRoot
             // 
-            tlpRoot.BackColor = Color.White;
+            tlpRoot.BackColor = Color.FromArgb(11, 15, 16);
             tlpRoot.ColumnCount = 2;
             tlpRoot.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-            tlpRoot.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 220F));
+            tlpRoot.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 240F));
             tlpRoot.Controls.Add(dgvPreview, 0, 0);
             tlpRoot.Controls.Add(pnlRight, 1, 0);
             tlpRoot.Controls.Add(pnlBottom, 0, 1);
             tlpRoot.Dock = DockStyle.Fill;
             tlpRoot.Location = new Point(0, 0);
             tlpRoot.Name = "tlpRoot";
-            tlpRoot.Padding = new Padding(12);
+            tlpRoot.Padding = new Padding(14);
             tlpRoot.RowCount = 2;
             tlpRoot.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tlpRoot.RowStyles.Add(new RowStyle(SizeType.Absolute, 170F));
+            tlpRoot.RowStyles.Add(new RowStyle(SizeType.Absolute, 190F));
             tlpRoot.Size = new Size(1100, 720);
             tlpRoot.TabIndex = 0;
             // 
@@ -64,128 +64,144 @@
             dgvPreview.AllowUserToAddRows = false;
             dgvPreview.AllowUserToDeleteRows = false;
             dgvPreview.AllowUserToResizeRows = false;
-            dataGridViewCellStyle4.BackColor = Color.FromArgb(250, 250, 252);
-            dgvPreview.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle1.BackColor = Color.FromArgb(12, 20, 22);
+            dataGridViewCellStyle1.ForeColor = Color.FromArgb(199, 255, 223);
+            dgvPreview.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             dgvPreview.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            dgvPreview.BackgroundColor = Color.White;
+            dgvPreview.BackgroundColor = Color.FromArgb(15, 21, 23);
+            dgvPreview.BorderStyle = BorderStyle.None;
             dgvPreview.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
             dgvPreview.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
-            dataGridViewCellStyle5.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle5.BackColor = Color.FromArgb(245, 246, 248);
-            dataGridViewCellStyle5.Font = new Font("Segoe UI", 9.75F, FontStyle.Bold);
-            dataGridViewCellStyle5.ForeColor = Color.FromArgb(33, 37, 41);
-            dataGridViewCellStyle5.WrapMode = DataGridViewTriState.True;
-            dgvPreview.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle5;
-            dgvPreview.ColumnHeadersHeight = 38;
-            dataGridViewCellStyle6.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle6.BackColor = SystemColors.Window;
-            dataGridViewCellStyle6.Font = new Font("Segoe UI", 9.75F);
-            dataGridViewCellStyle6.ForeColor = Color.FromArgb(33, 37, 41);
-            dataGridViewCellStyle6.SelectionBackColor = Color.FromArgb(220, 235, 252);
-            dataGridViewCellStyle6.SelectionForeColor = Color.FromArgb(33, 37, 41);
-            dataGridViewCellStyle6.WrapMode = DataGridViewTriState.False;
-            dgvPreview.DefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = Color.FromArgb(10, 30, 24);
+            dataGridViewCellStyle2.Font = new Font("Consolas", 10F, FontStyle.Bold);
+            dataGridViewCellStyle2.ForeColor = Color.FromArgb(0, 255, 156);
+            dataGridViewCellStyle2.SelectionBackColor = Color.FromArgb(10, 30, 24);
+            dataGridViewCellStyle2.SelectionForeColor = Color.FromArgb(0, 255, 156);
+            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.True;
+            dgvPreview.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            dgvPreview.ColumnHeadersHeight = 42;
+            dgvPreview.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = Color.FromArgb(15, 21, 23);
+            dataGridViewCellStyle3.Font = new Font("Consolas", 10F);
+            dataGridViewCellStyle3.ForeColor = Color.FromArgb(199, 255, 223);
+            dataGridViewCellStyle3.SelectionBackColor = Color.FromArgb(0, 255, 156);
+            dataGridViewCellStyle3.SelectionForeColor = Color.FromArgb(11, 15, 16);
+            dataGridViewCellStyle3.WrapMode = DataGridViewTriState.False;
+            dgvPreview.DefaultCellStyle = dataGridViewCellStyle3;
             dgvPreview.Dock = DockStyle.Fill;
-            dgvPreview.Location = new Point(15, 15);
+            dgvPreview.EnableHeadersVisualStyles = false;
+            dgvPreview.GridColor = Color.FromArgb(30, 42, 46);
+            dgvPreview.Location = new Point(17, 17);
             dgvPreview.MultiSelect = false;
             dgvPreview.Name = "dgvPreview";
             dgvPreview.ReadOnly = true;
             dgvPreview.RowHeadersVisible = false;
             dgvPreview.RowHeadersWidth = 51;
+            dgvPreview.RowTemplate.Height = 32;
             dgvPreview.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvPreview.Size = new Size(850, 520);
+            dgvPreview.Size = new Size(826, 496);
             dgvPreview.TabIndex = 0;
             // 
             // pnlRight
             // 
-            pnlRight.BackColor = Color.FromArgb(248, 249, 250);
+            pnlRight.BackColor = Color.FromArgb(15, 21, 23);
             pnlRight.Controls.Add(btnAddCsv);
             pnlRight.Controls.Add(btnStart);
             pnlRight.Dock = DockStyle.Fill;
-            pnlRight.Location = new Point(871, 15);
+            pnlRight.Location = new Point(849, 17);
             pnlRight.Name = "pnlRight";
-            pnlRight.Padding = new Padding(12);
-            pnlRight.Size = new Size(214, 520);
+            pnlRight.Padding = new Padding(14);
+            pnlRight.Size = new Size(234, 496);
             pnlRight.TabIndex = 1;
             // 
             // btnAddCsv
             // 
-            btnAddCsv.BackColor = Color.White;
+            btnAddCsv.BackColor = Color.FromArgb(10, 18, 20);
             btnAddCsv.Cursor = Cursors.Hand;
             btnAddCsv.Dock = DockStyle.Top;
-            btnAddCsv.FlatAppearance.BorderColor = Color.FromArgb(210, 214, 219);
+            btnAddCsv.FlatAppearance.BorderColor = Color.FromArgb(30, 42, 46);
+            btnAddCsv.FlatAppearance.MouseDownBackColor = Color.FromArgb(0, 200, 120);
+            btnAddCsv.FlatAppearance.MouseOverBackColor = Color.FromArgb(0, 60, 42);
             btnAddCsv.FlatStyle = FlatStyle.Flat;
-            btnAddCsv.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            btnAddCsv.Location = new Point(12, 56);
+            btnAddCsv.Font = new Font("Consolas", 11F, FontStyle.Bold);
+            btnAddCsv.ForeColor = Color.FromArgb(127, 255, 199);
+            btnAddCsv.Location = new Point(14, 60);
             btnAddCsv.Name = "btnAddCsv";
-            btnAddCsv.Size = new Size(190, 44);
+            btnAddCsv.Size = new Size(206, 46);
             btnAddCsv.TabIndex = 0;
-            btnAddCsv.Text = "Add CSV";
+            btnAddCsv.Text = "+ ADD CSV";
             btnAddCsv.UseVisualStyleBackColor = false;
             // 
             // btnStart
             // 
-            btnStart.BackColor = Color.White;
+            btnStart.BackColor = Color.FromArgb(8, 28, 22);
             btnStart.Cursor = Cursors.Hand;
             btnStart.Dock = DockStyle.Top;
-            btnStart.FlatAppearance.BorderColor = Color.FromArgb(210, 214, 219);
+            btnStart.FlatAppearance.BorderColor = Color.FromArgb(0, 255, 156);
+            btnStart.FlatAppearance.MouseDownBackColor = Color.FromArgb(0, 200, 120);
+            btnStart.FlatAppearance.MouseOverBackColor = Color.FromArgb(0, 80, 55);
             btnStart.FlatStyle = FlatStyle.Flat;
-            btnStart.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            btnStart.Location = new Point(12, 12);
-            btnStart.Margin = new Padding(0, 0, 0, 10);
+            btnStart.Font = new Font("Consolas", 11F, FontStyle.Bold);
+            btnStart.ForeColor = Color.FromArgb(0, 255, 156);
+            btnStart.Location = new Point(14, 14);
+            btnStart.Margin = new Padding(0, 0, 0, 12);
             btnStart.Name = "btnStart";
-            btnStart.Size = new Size(190, 44);
+            btnStart.Size = new Size(206, 46);
             btnStart.TabIndex = 1;
-            btnStart.Text = "Start";
+            btnStart.Text = "> START";
             btnStart.UseVisualStyleBackColor = false;
             // 
             // pnlBottom
             // 
-            pnlBottom.BackColor = Color.White;
+            pnlBottom.BackColor = Color.FromArgb(15, 21, 23);
             pnlBottom.BorderStyle = BorderStyle.FixedSingle;
             tlpRoot.SetColumnSpan(pnlBottom, 2);
             pnlBottom.Controls.Add(txtLog);
             pnlBottom.Controls.Add(lblLog);
             pnlBottom.Dock = DockStyle.Fill;
-            pnlBottom.Location = new Point(15, 541);
+            pnlBottom.Location = new Point(17, 519);
             pnlBottom.Name = "pnlBottom";
-            pnlBottom.Padding = new Padding(12);
-            pnlBottom.Size = new Size(1070, 164);
+            pnlBottom.Padding = new Padding(14);
+            pnlBottom.Size = new Size(1066, 184);
             pnlBottom.TabIndex = 2;
             // 
             // txtLog
             // 
-            txtLog.BackColor = Color.FromArgb(248, 249, 250);
+            txtLog.BackColor = Color.FromArgb(9, 13, 14);
             txtLog.BorderStyle = BorderStyle.FixedSingle;
             txtLog.Dock = DockStyle.Fill;
-            txtLog.Font = new Font("Consolas", 9.5F);
-            txtLog.Location = new Point(12, 34);
+            txtLog.Font = new Font("Consolas", 10F);
+            txtLog.ForeColor = Color.FromArgb(199, 255, 223);
+            txtLog.Location = new Point(14, 36);
             txtLog.Multiline = true;
             txtLog.Name = "txtLog";
             txtLog.ReadOnly = true;
             txtLog.ScrollBars = ScrollBars.Vertical;
-            txtLog.Size = new Size(1044, 116);
+            txtLog.Size = new Size(1036, 132);
             txtLog.TabIndex = 0;
             // 
             // lblLog
             // 
             lblLog.Dock = DockStyle.Top;
-            lblLog.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            lblLog.ForeColor = Color.FromArgb(33, 37, 41);
-            lblLog.Location = new Point(12, 12);
+            lblLog.Font = new Font("Consolas", 11F, FontStyle.Bold);
+            lblLog.ForeColor = Color.FromArgb(0, 255, 156);
+            lblLog.Location = new Point(14, 14);
             lblLog.Name = "lblLog";
-            lblLog.Size = new Size(1044, 22);
+            lblLog.Size = new Size(1036, 22);
             lblLog.TabIndex = 1;
-            lblLog.Text = "Log";
+            lblLog.Text = "[ LOG ]";
             // 
             // MainForm
             // 
-            AutoScaleDimensions = new SizeF(9F, 21F);
+            AutoScaleDimensions = new SizeF(9F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.White;
+            BackColor = Color.FromArgb(11, 15, 16);
             ClientSize = new Size(1100, 720);
             Controls.Add(tlpRoot);
-            Font = new Font("Segoe UI", 9.75F);
+            Font = new Font("Consolas", 10F);
+            ForeColor = Color.FromArgb(199, 255, 223);
             MinimumSize = new Size(980, 640);
             Name = "MainForm";
             StartPosition = FormStartPosition.CenterScreen;
@@ -197,5 +213,6 @@
             pnlBottom.PerformLayout();
             ResumeLayout(false);
         }
+
     }
 }
