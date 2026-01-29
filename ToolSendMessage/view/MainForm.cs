@@ -13,6 +13,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ToolSendMessage.models;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 using EpplusLicenseContext = OfficeOpenXml.LicenseContext;
 
 namespace ToolSendMessage.view
@@ -22,11 +23,13 @@ namespace ToolSendMessage.view
         private List<Customer> _customers = new();
         private readonly IWebDriver _driver;
         private CancellationTokenSource? _cts;
+        private string? _importFilePath;
 
         // ========= Config =========
         private const int DefaultWaitSeconds = 25;
 
         public IReadOnlyList<Customer> Customers => _customers;
+
 
         // NOTE: Giữ signature gần nhất có thể. Nếu bạn đang gọi MainForm(IWebDriver? driver, WebDriverWait wait)
         // thì bạn có thể sửa ctor call ở chỗ tạo form.
@@ -41,9 +44,229 @@ namespace ToolSendMessage.view
 
             btnAddCsv.Click += BtnAddCsv_Click;
             btnStart.Click += BtnStart_Click;
+            btnValidatePhone.Click += BtnValidatePhone_Click;
 
             Log("Ready.");
         }
+
+
+        private async void BtnValidatePhone_Click(object? sender, EventArgs e)
+        {
+            if (_customers == null || _customers.Count == 0)
+            {
+                Log("Chưa có dữ liệu khách hàng.");
+                return;
+            }
+            if (string.IsNullOrWhiteSpace(_importFilePath) || !File.Exists(_importFilePath))
+            {
+                MessageBox.Show("Bạn cần import Excel trước để có file đánh dấu.", "Missing file", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            btnStart.Enabled = false;
+            btnAddCsv.Enabled = false;
+            btnValidatePhone.Enabled = false;
+
+            _cts?.Cancel();
+            _cts?.Dispose();
+            _cts = new CancellationTokenSource();
+
+            try
+            {
+                Log("Start validating phones...");
+
+                // Kết quả validate theo MKH (hoặc theo số phone cũng được)
+                var results = new Dictionary<string, (bool ok, string reason)>();
+
+                foreach (var cust in _customers)
+                {
+                    _cts.Token.ThrowIfCancellationRequested();
+
+                    var (ok, reason) = await ValidateCustomerPhoneAsync(cust, _cts.Token);
+                    results[cust.MKH] = (ok, reason);
+
+                    Log($"VALIDATE {(ok ? "OK" : "FAIL")}: {cust.CustomerName} - {cust.Phone} => {reason}");
+                }
+
+                // Ghi lại file excel
+                SaveValidationToExcel(_importFilePath, results);
+
+                Log("Validate done. Excel đã được đánh dấu.");
+                MessageBox.Show("Validate xong. Đã đánh dấu kết quả vào Excel.", "Done", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (AutomationAbortException ex)
+            {
+                Log("ABORT: " + ex.Message);
+                GoToLogin("Không thể thao tác Zalo để validate. Vui lòng login lại.");
+            }
+            catch (OperationCanceledException)
+            {
+                Log("Validate cancelled.");
+            }
+            catch (Exception ex)
+            {
+                Log("Validate ERROR: " + ex.Message);
+                MessageBox.Show(ex.Message, "Validate failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                btnStart.Enabled = true;
+                btnAddCsv.Enabled = true;
+                btnValidatePhone.Enabled = true;
+            }
+        }
+        private (bool ok, string reason) ValidatePhoneFormat(string? phoneRaw)
+        {
+            var p = (phoneRaw ?? "").Trim();
+
+            // chỉ giữ số
+            var digits = new string(p.Where(char.IsDigit).ToArray());
+
+            if (string.IsNullOrWhiteSpace(digits))
+                return (false, "Empty");
+            if (digits.Length == 9)
+                digits = "0" + digits;
+            // Ví dụ VN: 10 số (0xxxxxxxxx) hoặc 11 số cũ
+            if (digits.Length != 10 && digits.Length != 11)
+                return (false, $"Invalid length {digits.Length}");
+
+            // thêm rule nếu muốn: bắt đầu bằng 0
+            if (!digits.StartsWith("0"))
+                return (false, "Must start with 0");
+
+            return (true, "Format OK");
+        }
+        private async Task<(bool ok, string reason)> ValidateCustomerPhoneAsync(Customer cust, CancellationToken ct)
+        {
+            ct.ThrowIfCancellationRequested();
+
+            EnsureDriverAlive();
+            SafeSwitchToDefaultContent();
+
+            // 1) Validate format trước
+            var (fmtOk, fmtReason) = ValidatePhoneFormat(cust.Phone);
+            if (!fmtOk) return (false, fmtReason);
+
+            var phoneDigits = new string((cust.Phone ?? "").Where(char.IsDigit).ToArray());
+
+            // 2) Open Add Friend
+            await Delay(400, ct);
+            var addBtn = WaitVisible(By.XPath("//div[@data-id='btn_Main_AddFrd']"), 8);
+            if (addBtn == null) return (false, "Add friend button missing");
+            ClickSafe(addBtn);
+
+            // 3) Type phone
+            await Delay(250, ct);
+            try
+            {
+                TypePhoneNumber(phoneDigits, ct);
+            }
+            catch (AutomationAbortException ex)
+            {
+                return (false, "Phone input error: " + ex.Message);
+            }
+
+            // 4) Find Search button (đúng yêu cầu bạn: nếu không tồn tại nút tìm kiếm => đánh dấu)
+            await Delay(200, ct);
+            var searchBtn = WaitVisible(By.XPath("//div[@data-id='btn_Main_AddFrd_Search']"), 6);
+            if (searchBtn == null)
+                return (false, "Search button missing");
+
+            ClickSafe(searchBtn);
+
+            // 5) Chờ kết quả: bạn có thể chọn 1 dấu hiệu "có người tồn tại"
+            // Ví dụ: có nút CHAT (STR_CHAT) hoặc phần nào đó trong UI.
+            await Delay(500, ct);
+
+            // Trường hợp tồn tại: thường sẽ thấy "STR_CHAT"
+            var chatInner = WaitVisibleValidate(By.CssSelector("div[data-translate-inner='STR_CHAT']"), 5);
+            if (chatInner != null)
+            {
+                var closeBtn = WaitVisible(By.CssSelector("div[icon='close f16'].modal-header-icon"), 2);
+                if (closeBtn != null) ClickSafe(closeBtn);
+                else
+                {
+                    // fallback: click outside modal
+                    var overlay = WaitVisible(By.CssSelector("div.modal-backdrop"), 2);
+                    if (overlay != null) ClickSafe(overlay);
+                }
+                return (true, "Zalo user found");
+            }
+
+            // Nếu không thấy chat -> có thể không tồn tại, hoặc UI báo lỗi
+            // Bạn có thể thêm selector thông báo "Không tìm thấy" nếu biết text/class.
+            IWebElement? closeBtn_fail = WaitVisible(By.CssSelector("div[icon='close f16'].modal-header-icon"), 2);
+            if (closeBtn_fail != null) ClickSafe(closeBtn_fail);
+            return (false, "Zalo user not found");
+        }
+        private void SaveValidationToExcel(string filePath, Dictionary<string, (bool ok, string reason)> results)
+        {
+            using var package = new ExcelPackage(new FileInfo(filePath));
+            var ws = package.Workbook.Worksheets.FirstOrDefault();
+            if (ws == null || ws.Dimension == null) throw new InvalidOperationException("Worksheet is empty.");
+
+            int startRow = ws.Dimension.Start.Row;
+            int endRow = ws.Dimension.End.Row;
+            int startCol = ws.Dimension.Start.Column;
+            int endCol = ws.Dimension.End.Column;
+
+            int headerRow = startRow;
+
+            // map header->col
+            var headerMap = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+            for (int col = startCol; col <= endCol; col++)
+            {
+                var header = (ws.Cells[headerRow, col].Text ?? "").Trim();
+                if (!string.IsNullOrWhiteSpace(header) && !headerMap.ContainsKey(header))
+                    headerMap[header] = col;
+            }
+
+            if (!headerMap.TryGetValue("MKH", out int mkhCol))
+                throw new InvalidOperationException("Excel thiếu cột MKH để đối chiếu.");
+
+            // tạo (hoặc lấy) cột status/reason
+            int statusCol = GetOrCreateHeader(ws, headerMap, headerRow, ref endCol, "ValidateStatus");
+            int reasonCol = GetOrCreateHeader(ws, headerMap, headerRow, ref endCol, "ValidateReason");
+
+            // ghi từng dòng
+            for (int row = headerRow + 1; row <= endRow; row++)
+            {
+                var mkh = (ws.Cells[row, mkhCol].Text ?? "").Trim();
+                if (string.IsNullOrWhiteSpace(mkh)) continue;
+
+                if (results.TryGetValue(mkh, out var r))
+                {
+                    ws.Cells[row, statusCol].Value = r.ok ? "OK" : "FAIL";
+                    ws.Cells[row, reasonCol].Value = r.reason;
+
+                    // tô màu dễ nhìn
+                    ws.Cells[row, statusCol].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                    ws.Cells[row, statusCol].Style.Fill.BackgroundColor.SetColor(
+                        r.ok ? System.Drawing.Color.FromArgb(198, 239, 206) : System.Drawing.Color.FromArgb(255, 199, 206));
+                }
+            }
+
+            // lưu ra file mới để an toàn production (khuyên)
+            var outPath = Path.Combine(
+                Path.GetDirectoryName(filePath)!,
+                Path.GetFileNameWithoutExtension(filePath) + "_validated" + Path.GetExtension(filePath));
+
+            package.SaveAs(new FileInfo(outPath));
+            Log("Saved validated Excel: " + outPath);
+        }
+
+        private static int GetOrCreateHeader(ExcelWorksheet ws, Dictionary<string, int> headerMap, int headerRow, ref int endCol, string headerName)
+        {
+            if (headerMap.TryGetValue(headerName, out int col))
+                return col;
+
+            endCol += 1;
+            ws.Cells[headerRow, endCol].Value = headerName;
+            ws.Cells[headerRow, endCol].Style.Font.Bold = true;
+            headerMap[headerName] = endCol;
+            return endCol;
+        }
+
 
         // ========= FORM LIFECYCLE =========
         protected override void OnFormClosing(FormClosingEventArgs e)
@@ -93,6 +316,7 @@ namespace ToolSendMessage.view
                 dgvPreview.AutoGenerateColumns = true;
                 dgvPreview.DataSource = null;
                 dgvPreview.DataSource = _customers;
+                _importFilePath = ofd.FileName;
 
                 if (dgvPreview.Columns != null)
                 {
@@ -180,7 +404,7 @@ namespace ToolSendMessage.view
             }
 
             var message =
-                $"Agribank Hoa Lư xin thông báo lãi của khách hàng {customer.CustomerName} đến 31/01/2026 là: {customer.TotalVnd:N0} đồng. " +
+                $"Agribank Hoa Lư xin thông báo lãi của khách hàng {customer.CustomerName} đến {GetSelectedDateVi()}  là: {customer.TotalVnd:N0} đồng. " +
                 $"Xin trân trọng cảm ơn.";
 
             EnsureDriverAlive();
@@ -286,7 +510,29 @@ namespace ToolSendMessage.view
                 throw new AutomationAbortException("WebDriverException: " + ex.Message);
             }
         }
+        private IWebElement? WaitVisibleValidate(By by, int seconds)
+        {
+            try
+            {
+                var wait = new WebDriverWait(new SystemClock(), _driver, TimeSpan.FromSeconds(seconds), TimeSpan.FromMilliseconds(250));
+                wait.IgnoreExceptionTypes(typeof(NoSuchElementException), typeof(StaleElementReferenceException));
 
+                return wait.Until(d =>
+                {
+                    var el = d.FindElements(by).FirstOrDefault();
+                    if (el == null) return null;
+                    return el.Displayed ? el : null;
+                });
+            }
+            catch (WebDriverTimeoutException)
+            {
+                return null;
+            }
+            catch (WebDriverException ex)
+            {
+                throw new AutomationAbortException("WebDriverException: " + ex.Message);
+            }
+        }
         private IWebElement RequireVisible(By by, int seconds, string stepName)
         {
             var el = WaitVisible(by, seconds);
@@ -514,11 +760,22 @@ namespace ToolSendMessage.view
 
             return 0m;
         }
+
+        private DateTime GetSelectedDate()
+        {
+            return dtpScheduleDate.Value.Date;
+        }
+
+        private string GetSelectedDateVi()
+        {
+            // dd/MM/yyyy đúng format VN
+            return GetSelectedDate().ToString("dd/MM/yyyy", new CultureInfo("vi-VN"));
+        }
     }
 
     // ========= ABORT EXCEPTION =========
     public class AutomationAbortException : Exception
     {
         public AutomationAbortException(string message) : base(message) { }
-    }
+    };
 }

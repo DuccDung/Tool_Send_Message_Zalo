@@ -1,25 +1,29 @@
 ﻿namespace ToolSendMessage.view
 {
-        partial class MainForm
+    partial class MainForm
+    {
+        private System.ComponentModel.IContainer components = null;
+
+        private System.Windows.Forms.TableLayoutPanel tlpRoot;
+        private System.Windows.Forms.Panel pnlRight;
+        private System.Windows.Forms.Button btnStart;
+        private System.Windows.Forms.Button btnAddCsv;
+        private System.Windows.Forms.Button btnValidatePhone;
+
+        private System.Windows.Forms.DataGridView dgvPreview;
+
+        private System.Windows.Forms.Panel pnlBottom;
+        private System.Windows.Forms.Label lblLog;
+        private System.Windows.Forms.TextBox txtLog;
+
+        private System.Windows.Forms.Label lblScheduleDate;
+        private System.Windows.Forms.DateTimePicker dtpScheduleDate;
+
+        protected override void Dispose(bool disposing)
         {
-            private System.ComponentModel.IContainer components = null;
-
-            private System.Windows.Forms.TableLayoutPanel tlpRoot;
-            private System.Windows.Forms.Panel pnlRight;
-            private System.Windows.Forms.Button btnStart;
-            private System.Windows.Forms.Button btnAddCsv;
-
-            private System.Windows.Forms.DataGridView dgvPreview;
-
-            private System.Windows.Forms.Panel pnlBottom;
-            private System.Windows.Forms.Label lblLog;
-            private System.Windows.Forms.TextBox txtLog;
-
-            protected override void Dispose(bool disposing)
-            {
-                if (disposing && (components != null)) components.Dispose();
-                base.Dispose(disposing);
-            }
+            if (disposing && (components != null)) components.Dispose();
+            base.Dispose(disposing);
+        }
 
         private void InitializeComponent()
         {
@@ -29,6 +33,9 @@
             tlpRoot = new TableLayoutPanel();
             dgvPreview = new DataGridView();
             pnlRight = new Panel();
+            dtpScheduleDate = new DateTimePicker();
+            lblScheduleDate = new Label();
+            btnValidatePhone = new Button();
             btnAddCsv = new Button();
             btnStart = new Button();
             pnlBottom = new Panel();
@@ -107,6 +114,9 @@
             // pnlRight
             // 
             pnlRight.BackColor = Color.FromArgb(15, 21, 23);
+            pnlRight.Controls.Add(dtpScheduleDate);
+            pnlRight.Controls.Add(lblScheduleDate);
+            pnlRight.Controls.Add(btnValidatePhone);
             pnlRight.Controls.Add(btnAddCsv);
             pnlRight.Controls.Add(btnStart);
             pnlRight.Dock = DockStyle.Fill;
@@ -115,6 +125,59 @@
             pnlRight.Padding = new Padding(14);
             pnlRight.Size = new Size(234, 496);
             pnlRight.TabIndex = 1;
+            // 
+            // dtpScheduleDate
+            // 
+            // dtpScheduleDate
+            dtpScheduleDate.Dock = DockStyle.Top;
+            dtpScheduleDate.Margin = new Padding(0, 0, 0, 0);
+            dtpScheduleDate.Padding = new Padding(0);
+
+            dtpScheduleDate.Format = DateTimePickerFormat.Custom;
+            dtpScheduleDate.CustomFormat = "dd/MM/yyyy";
+
+            dtpScheduleDate.Font = new Font("Consolas", 11F, FontStyle.Bold);
+            dtpScheduleDate.CalendarFont = new Font("Consolas", 10F);
+
+            // DateTimePicker WinForms không đảm bảo ăn BackColor/ForeColor trên mọi theme,
+            // nhưng cứ set vẫn ok.
+            dtpScheduleDate.BackColor = Color.FromArgb(10, 18, 20);
+            dtpScheduleDate.ForeColor = Color.FromArgb(127, 255, 199);
+
+            dtpScheduleDate.Height = 29;
+            dtpScheduleDate.Value = DateTime.Today; // đừng hardcode 2026
+
+
+            // 
+            // lblScheduleDate
+            // 
+            lblScheduleDate.Dock = DockStyle.Top;
+            lblScheduleDate.Font = new Font("Consolas", 10F, FontStyle.Bold);
+            lblScheduleDate.ForeColor = Color.FromArgb(0, 255, 156);
+            lblScheduleDate.Location = new Point(14, 152);
+            lblScheduleDate.Name = "lblScheduleDate";
+            lblScheduleDate.Padding = new Padding(0, 12, 0, 4);
+            lblScheduleDate.Size = new Size(206, 43);
+            lblScheduleDate.TabIndex = 4;
+            lblScheduleDate.Text = "[ CHỌN NGÀY ]";
+            // 
+            // btnValidatePhone
+            // 
+            btnValidatePhone.BackColor = Color.FromArgb(10, 18, 20);
+            btnValidatePhone.Cursor = Cursors.Hand;
+            btnValidatePhone.Dock = DockStyle.Top;
+            btnValidatePhone.FlatAppearance.BorderColor = Color.FromArgb(30, 42, 46);
+            btnValidatePhone.FlatAppearance.MouseDownBackColor = Color.FromArgb(0, 200, 120);
+            btnValidatePhone.FlatAppearance.MouseOverBackColor = Color.FromArgb(0, 60, 42);
+            btnValidatePhone.FlatStyle = FlatStyle.Flat;
+            btnValidatePhone.Font = new Font("Consolas", 11F, FontStyle.Bold);
+            btnValidatePhone.ForeColor = Color.FromArgb(127, 255, 199);
+            btnValidatePhone.Location = new Point(14, 106);
+            btnValidatePhone.Name = "btnValidatePhone";
+            btnValidatePhone.Size = new Size(206, 46);
+            btnValidatePhone.TabIndex = 2;
+            btnValidatePhone.Text = "✓ VALIDATE";
+            btnValidatePhone.UseVisualStyleBackColor = false;
             // 
             // btnAddCsv
             // 
